@@ -3,10 +3,13 @@ package puzzle2;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import lombok.Builder;
 import lombok.Getter;
 
-public class Puzzle2Part2 {
+public class Puzzle2Part2WithRegex {
 
     private final static String INPUT_FILE = "src/puzzle2/input.txt";
 
@@ -31,15 +34,13 @@ public class Puzzle2Part2 {
     }
 
     private static PasswordWithPolicy parseLine(String nextLine) {
-        String[] min = nextLine.split("-");
-        String[] max = min[1].split(" ", 2);
-        String[] letter = max[1].split(": ");
-
+        Matcher m = Pattern.compile("(?<min>\\d+)-(?<max>\\d+) (?<letter>\\w): (?<password>\\w+)").matcher(nextLine);
+        m.find();
         return PasswordWithPolicy.builder()
-                .firstPosition(Integer.valueOf(min[0]))
-                .secondPosition(Integer.valueOf(max[0]))
-                .requiredLetter(letter[0].charAt(0))
-                .password(letter[1])
+                .firstPosition(Integer.valueOf(m.group("min")))
+                .secondPosition(Integer.valueOf(m.group("max")))
+                .requiredLetter(m.group("letter").charAt(0))
+                .password(m.group("password"))
                 .build();
     }
     
